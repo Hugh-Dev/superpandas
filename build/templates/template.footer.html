@@ -4,4 +4,11 @@
 <script src="{% static 'jquery/jquery-3.5.1.slim.min.js' %}"></script>
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.22/datatables.min.js"></script>
+
 <!-- Optional JavaScript -->
+<script type="text/javascript">
+	$(document).ready( function () {
+    $('#table_id').DataTable();
+} );
+</script>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+{% include 'template.head.html' %}
+{% block body %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow bg-white rounded">
+  <a class="navbar-brand" href="{% url 'index' %}">
+    <i class="fab fa-less text-muted fa-2x"></i>
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link text-primary" href="{% url 'dataframe' %}">Maquinaria Instalada<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'bodega' %}">Maquinaria en Bodega</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Cloud</a>
+      </li>
+    </ul>
+    <span class="navbar-text">
+      <a class="btn btn-primary btn-sm text-white" href="{% url 'adjuntar' %}" role="button">adjuntar archivo</a>
+      <a class="btn btn-primary btn-sm text-white" href="{% url 'cache' %}" role="button">limpiar cache</a>
+      <a class="btn btn-primary btn-sm text-white" href="{% url 'cleaner' %}" role="button">limpiar</a>
+    </span>
+  </div>
+</nav>
+<!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            {% if mensaje %}
+            <div class="alert alert-primary text-center" role="alert">
+              <strong>{{mensaje}}</strong>
+            </div>
+            {% endif %}
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table display text-primary" id="table_id" style="font-size: 12px;">
+                  <thead>
+                    <tr>
+                      <th>Codigo de Entrega</th>             
+                      <th>Numero de Serie</th>
+                      <th>Fuente</th>             
+                      <th>Pais</th>
+                      <th>Codigo de Cliente</th>             
+                      <th>Nombre cliente</th>
+                      <th>Dirección</th>             
+                      <th>Distrito</th>
+                      <th>Activo</th>             
+                      <th>Tamaño</th>
+                      <th>Imagen/Publicidad</th>
+                      <th>Año de Fabricación</th>
+                      <th>Fecha de Instalación</th>
+                      <th>Propiedad</th>
+                    </tr>
+                  </thead>
+                  {% if choices %}
+                  <tbody>
+                    {% for choice in choices %}
+                    <tr>
+                          <td>{{choice.codigo}}</td>
+                          <td>{{choice.serie}}</td>
+                          <td>{{choice.fuente}}</td>
+                          <td>{{choice.pais}}</td>
+                          <td>{{choice.cliente}}</td>
+                          <td>{{choice.nombre}}</td>
+                          <td>{{choice.direccion}}</td>
+                          <td>{{choice.distrito}}</td>
+                          <td>{{choice.activo}}</td>
+                          <td>{{choice.tamaño}}</td>
+                          <td>{{choice.imagen}}</td>
+                          <td>{{choice.año}}</td>
+                          <td>{{choice.fecha}}</td>
+                          <td>{{choice.propiedad}}</td>
+                          
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                  {% endif %}
+                  <tfoot>
+                    <tr>
+                        <th>Fecha Instalación</th>
+                    </tr>
+                </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+
+<script>
+  $(document).ready( function () {
+    $('#table_id').DataTable(
+      {
+        "scrollY":        "200px",
+        "scrollCollapse": true,
+        "paging":         false
+    } 
+    );
+} );
+</script>  
+{% endblock %}
+{% include 'template.footer.html' %}
+</html>

@@ -4,7 +4,7 @@
 {% include 'template.head.html' %}
 {% block body %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow bg-white rounded">
-  <a class="navbar-brand" href="#">
+  <a class="navbar-brand" href="{% url 'index' %}">
     <i class="fab fa-less text-muted fa-2x"></i>
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,53 +13,64 @@
   <div class="collapse navbar-collapse" id="navbarText">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link text-info" href="#">Almacenamiento de datos <span class="sr-only">(current)</span></a>
+        <a class="nav-link text-primary" href="{% url 'dataframe' %}">Maquinaria Instalada <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Analítica de datos</a>
+        <a class="nav-link" href="{% url 'bodega' %}">Maquinaria en Bodega</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Visualización de datos</a>
+        <a class="nav-link" href="#">Cloud</a>
       </li>
     </ul>
     <span class="navbar-text">
-      <button type="button" class="btn btn-outline-info btn-sm">demo</button>
+      <a class="btn btn-primary btn-sm text-white" href="{% url 'adjuntar' %}" role="button">adjuntar archivo</a>
+      <a class="btn btn-primary btn-sm text-white" href="{% url 'cache' %}" role="button">limpiar cache</a>
+      <a class="btn btn-primary btn-sm text-white" href="{% url 'cleaner' %}" role="button">limpiar</a>
     </span>
   </div>
 </nav>
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-  <h1 class="display-4 text-info">Demostración</h1>
-  <p class="lead">Crearemos rápidamente un centro de control eficaz para sus clientes y datos. Está demo esta construida con componentes y utilidades como Bootstrap - Django - Python con fines de lograr una personalización.</p>
+  <h1 class="display-4 text-primary">Dashboard</h1>
+  <p class="lead">Lesspy es un herramienta de control eficaz donde puedes hacer clasificacion y depuracion de datos. Está construida con componentes y utilidades como Bootstrap - Django - Python con fines de lograr una potente app.</p>
+    {% if mensaje %}
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+      <strong>{{mensaje}}</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
 </div>
 
 <div class="container">
   <div class="card-deck mb-3 text-center">
 
-    <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded">
+    
+    <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded card-hover">
       <div class="card-body">
-        <i class="fas fa-coins fa-4x text-muted"></i>
+        <i class="fas fa-cog fa-4x text-muted"></i>
       </div>
       <div class="card-footer text-muted border-0">
-        <h6 class="card-title text-muted">Almacenamiento de datos</h6>
+        <h6 class="card-title text-muted">Maquinaria Instalada</h6>
       </div>
     </div>
 
-    <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded">
+    <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded card-hover">
       <div class="card-body">
-        <i class="far fa-chart-bar fa-4x text-muted"></i>
+        <i class="fas fa-box-open fa-4x text-muted"></i>
       </div>
       <div class="card-footer text-muted border-0">
-        <h6 class="card-title text-muted">Analítica de datos</h6>
+        <h6 class="card-title text-muted">Maquinaria en Bodega</h6>
       </div>
     </div>
 
-    <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded">
+    <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded card-hover">
       <div class="card-body">
         <i class="fas fa-cloud fa-4x text-muted"></i>
       </div>
       <div class="card-footer text-muted border-0">
-        <h6 class="card-title text-muted">Visualización de datos</h6>
+        <h6 class="card-title text-muted">Cloud</h6>
       </div>
     </div>
 
