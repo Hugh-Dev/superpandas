@@ -19,7 +19,7 @@
         <a class="nav-link" href="{% url 'bodega' %}">Maquinaria en Bodega</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Cloud</a>
+        <a class="nav-link" href="{% url 'cloud' %}">Cloud</a>
       </li>
     </ul>
     <span class="navbar-text">
@@ -41,19 +41,19 @@
                 <table class="table display text-primary" id="table_id" style="font-size: 12px;">
                   <thead>
                     <tr>
-                      <th>Codigo de Entrega</th>             
-                      <th>Numero de Serie</th>
-                      <th>Fuente</th>             
+                      <th>Codigo/Entrega</th>
+                      <th>Numero/Serie</th>
+                      <th>Fuente</th>
                       <th>Pais</th>
-                      <th>Codigo de Cliente</th>             
-                      <th>Nombre cliente</th>
-                      <th>Dirección</th>             
+                      <th>Codigo/Cliente</th>
+                      <th>Nombre/cliente</th>
+                      <th>Dirección</th>
                       <th>Distrito</th>
-                      <th>Activo</th>             
+                      <th>Activo</th>
                       <th>Tamaño</th>
-                      <th>Imagen/Publicidad</th>
-                      <th>Año de Fabricación</th>
-                      <th>Fecha de Instalación</th>
+                      <th>Imagen</th>
+                      <th>Año/Fabricación</th>
+                      <th>Fecha/Instalación</th>
                       <th>Propiedad</th>
                     </tr>
                   </thead>
@@ -75,16 +75,11 @@
                           <td>{{choice.año}}</td>
                           <td>{{choice.fecha}}</td>
                           <td>{{choice.propiedad}}</td>
-                          
+
                         </tr>
                         {% endfor %}
                       </tbody>
                   {% endif %}
-                  <tfoot>
-                    <tr>
-                        <th>Fecha Instalación</th>
-                    </tr>
-                </tfoot>
                 </table>
               </div>
             </div>
@@ -97,10 +92,10 @@
         "scrollY":        "200px",
         "scrollCollapse": true,
         "paging":         false
-    } 
+    }
     );
 } );
-</script>  
+</script>
 {% endblock %}
 {% include 'template.footer.html' %}
 </html>

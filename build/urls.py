@@ -7,11 +7,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
 	path('', IndexView.as_view(), name='index'),
-    path('dataframe', DataFrameView.as_view(), name='dataframe'),
+    path('instalada', DataFrameView.as_view(), name='dataframe'),
     path('cleaner', CleanerView.as_view(), name='cleaner'),
     path('adjuntar', AdjuntarView.as_view(), name='adjuntar'),
     path('cache', CacheView.as_view(), name='cache'),
     path('bodega', BodegaView.as_view(), name='bodega'),
+	path('cloud', CloudView.as_view(), name='cloud'),
 ]
 
 if settings.DEBUG:

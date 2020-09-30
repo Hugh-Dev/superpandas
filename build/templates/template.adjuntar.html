@@ -19,7 +19,7 @@
         <a class="nav-link" href="{% url 'bodega' %}">Maquinaria en Bodega</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Cloud</a>
+        <a class="nav-link" href="{% url 'cloud' %}">Cloud</a>
       </li>
     </ul>
     <span class="navbar-text">
@@ -38,7 +38,7 @@
 <div class="container">
   <div class="card-deck mb-3">
 
-    
+
     <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded card-hover text-center">
       {% if mensaje %}
       <div class="alert alert-primary alert-dismissible fade show" role="alert">

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+{% include 'template.head.html' %}
+{% block body %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow bg-white rounded">
+  <a class="navbar-brand" href="{% url 'index' %}">
+    <i class="fab fa-less text-muted fa-2x"></i>
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link text-primary" href="{% url 'dataframe' %}">Maquinaria Instalada<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'bodega' %}">Maquinaria en Bodega</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'cloud' %}">Cloud</a>
+      </li>
+    </ul>
+    <span class="navbar-text">
+      <a class="btn btn-primary btn-sm text-white" href="{% url 'adjuntar' %}" role="button">adjuntar archivo</a>
+      <a class="btn btn-primary btn-sm text-white" href="{% url 'cache' %}" role="button">limpiar cache</a>
+      <a class="btn btn-primary btn-sm text-white" href="{% url 'cleaner' %}" role="button">limpiar</a>
+    </span>
+  </div>
+</nav>
+<!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            {% if mensaje %}
+            <div class="alert alert-primary text-center" role="alert">
+              <strong>{{mensaje}}</strong>
+            </div>
+            {% endif %}
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table display text-primary" id="table_id" style="font-size: 12px;">
+                  <thead>
+                    <tr>
+                      <th>Numero/Serie</th>
+                    </tr>
+                  </thead>
+                  {% if choices %}
+                  <tbody>
+                    {% for choice in choices %}
+                    <tr>
+                      <td>{{choice.serie}}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                  {% endif %}
+                </table>
+              </div>
+            </div>
+          </div>
+
+<script>
+  $(document).ready( function () {
+    $('#table_id').DataTable(
+      {
+        "scrollY":        "200px",
+        "scrollCollapse": true,
+        "paging":         false
+    }
+    );
+} );
+</script>
+{% endblock %}
+{% include 'template.footer.html' %}
+</html>

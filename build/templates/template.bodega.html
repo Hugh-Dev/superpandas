@@ -19,7 +19,7 @@
         <a class="nav-link" href="{% url 'bodega' %}">Maquinaria en Bodega</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Cloud</a>
+        <a class="nav-link" href="{% url 'cloud' %}">Cloud</a>
       </li>
     </ul>
     <span class="navbar-text">
@@ -41,50 +41,61 @@
                 <table class="table display text-primary" id="table_id" style="font-size: 12px;">
                   <thead>
                     <tr>
-                      <th>Codigo de Entrega</th>             
-                      <th>Numero de Serie</th>
-                      <th>Fuente</th>             
+                      <th>Ingreso/taller</th>
+                      <th>Numero/Serie</th>
+                      <th>CSD/CVZ</th>
+                      <th>Frec</th>
+                      <th>Cet</th>
+                      <th>Nombre/Cet</th>
+                      <th>OfVta</th>
+                      <th>Oficina/ventas</th>
+                      <th>Fuente</th>
                       <th>Pais</th>
-                      <th>Codigo de Cliente</th>             
-                      <th>Nombre cliente</th>
-                      <th>Dirección</th>             
+                      <th>Codigo/Cliente</th>
+                      <th>Nombre/cliente</th>
+                      <th>Dirección</th>
                       <th>Distrito</th>
-                      <th>Activo</th>             
+                      <th>Distrito 2</th>
+                      <th>Activo</th>
                       <th>Tamaño</th>
-                      <th>Imagen/Publicidad</th>
-                      <th>Año de Fabricación</th>
-                      <th>Fecha de Instalación</th>
+                      <th>Imagen</th>
+                      <th>Año/Fabricación</th>
+                      <th>Material</th>
                       <th>Propiedad</th>
+                      <th>Ruta</th>
                     </tr>
                   </thead>
                   {% if choices %}
                   <tbody>
                     {% for choice in choices %}
                     <tr>
-                          <td>{{choice.codigo}}</td>
-                          <td>{{choice.serie}}</td>
-                          <td>{{choice.fuente}}</td>
-                          <td>{{choice.pais}}</td>
-                          <td>{{choice.cliente}}</td>
-                          <td>{{choice.nombre}}</td>
-                          <td>{{choice.direccion}}</td>
-                          <td>{{choice.distrito}}</td>
-                          <td>{{choice.activo}}</td>
-                          <td>{{choice.tamaño}}</td>
-                          <td>{{choice.imagen}}</td>
-                          <td>{{choice.año}}</td>
-                          <td>{{choice.fecha}}</td>
-                          <td>{{choice.propiedad}}</td>
-                          
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-                  {% endif %}
-                  <tfoot>
-                    <tr>
-                        <th>Fecha Instalación</th>
+                      <td>{{choice.fecha_ingreso_taller}}</td>
+                      <td>{{choice.serie}}</td>
+                      <td>{{choice.csd_cvz}}</td>
+                      <td>{{choice.frec}}</td>
+                      <td>{{choice.cet}}</td>
+                      <td>{{choice.nombre_cet}}</td>
+                      <td>{{choice.ofvta}}</td>
+                      <td>{{choice.oficina_ventas}}</td>
+                      <td>{{choice.fuente}}</td>
+                      <td>{{choice.pais}}</td>
+                      <td>{{choice.codigo}}</td>
+                      <td>{{choice.nombre}}</td>
+                      <td>{{choice.direccion}}</td>
+                      <td>{{choice.distrito}}</td>
+                      <td>{{choice.distrito2}}</td>
+                      <td>{{choice.activo}}</td>
+                      <td>{{choice.tamaño}}</td>
+                      <td>{{choice.imagen}}</td>
+                      <td>{{choice.año}}</td>
+                      <td>{{choice.material}}</td>
+                      <td>{{choice.propiedad}}</td>
+                      <td>{{choice.ruta}}</td>
+
                     </tr>
-                </tfoot>
+                    {% endfor %}
+                  </tbody>
+                  {% endif %}
                 </table>
               </div>
             </div>
@@ -97,10 +108,10 @@
         "scrollY":        "200px",
         "scrollCollapse": true,
         "paging":         false
-    } 
+    }
     );
 } );
-</script>  
+</script>
 {% endblock %}
 {% include 'template.footer.html' %}
 </html>
