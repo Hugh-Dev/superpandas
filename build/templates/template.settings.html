@@ -47,51 +47,56 @@
 </nav>
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-  <h1 class="display-4 text-primary">Dashboard</h1>
-    {% if mensaje %}
-    <div class="alert border border-warning alert-warning alert-dismissible fade show" role="alert">
-      <strong>{{mensaje}}</strong>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    {% endif %}
+  <h1 class="display-4 text-primary">Settings</h1>
 </div>
 
-<div class="container">
-  <div class="card-deck mb-3 text-center">
-
-
-    <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded card-hover">
-      <div class="card-body">
-        <i class="far fa-file text-muted fa-4x"></i>
-      </div>
-      <div class="card-footer text-muted border-0">
-        <h6 class="card-title text-muted">{{sheet_1}}</h6>
+  <div class="container">
+    <div class="row justify-content-md-center">
+      <div class="col col-lg-6">
+        <div class="card">
+           <div class="card-header">
+              <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Settings Sheets</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">#</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">#</a>
+                </li>
+              </ul>
+              <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                  <form class="" action="{% url 'settings' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <input class="form-control form-control-sm" type="text" placeholder="Set sheet name 1" name="sheet_1" required="true">
+                      <small id="emailHelp" class="form-text text-muted">Enter the name you want to set for sheet 1</small>
+                    </div>
+                    <div class="form-group">
+                      <input class="form-control form-control-sm" type="text" placeholder="Set sheet name 2" name="sheet_2" required="true">
+                      <small id="emailHelp" class="form-text text-muted">Enter the name you want to set for sheet 2</small>
+                    </div>
+                    <div class="form-group">
+                      <input class="form-control form-control-sm" type="text" placeholder="Set sheet name 3" name="sheet_3" required="true">
+                      <small id="emailHelp" class="form-text text-muted">Enter the name you want to set for sheet 3</small>
+                    </div>
+                    <div class="form-group">
+                      <input class="form-control form-control-sm btn btn-primary btn-sm" type="submit">
+                    </div>
+                  </form>
+                </div>
+                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...</div>
+                <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
+              </div>
+           </div>
       </div>
     </div>
-
-    <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded card-hover">
-      <div class="card-body">
-        <i class="far fa-file text-muted fa-4x"></i>
-      </div>
-      <div class="card-footer text-muted border-0">
-        <h6 class="card-title text-muted">{{sheet_2}}</h6>
-      </div>
-    </div>
-
-    <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded card-hover">
-      <div class="card-body">
-        <i class="far fa-file text-muted fa-4x"></i>
-      </div>
-      <div class="card-footer text-muted border-0">
-        <h6 class="card-title text-muted">{{sheet_3}}</h6>
-      </div>
-    </div>
-
-
   </div>
 </div>
+
+
 
 <!-- footer -->
 <script>

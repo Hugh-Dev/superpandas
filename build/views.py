@@ -9,6 +9,7 @@ from django.shortcuts import render
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
+from sqlalchemy import create_engine
 from django.views.generic import TemplateView, View
 from django.utils.decorators import method_decorator
 from .models import *
@@ -21,12 +22,14 @@ from django.http import HttpResponseRedirect
 from demo.settings import STATIC_ROOT, STATIC_URL
 from django.core.files.storage import FileSystemStorage
 import re
+import glob
 import sys
 import os.path
 import time
 from os import remove
 
 #https://docs.djangoproject.com/en/3.0/topics/class-based-views/intro/
+#https://docs.djangoproject.com/en/3.1/ref/models/querysets/
 # Create your views here.
 
 """
@@ -48,21 +51,33 @@ class IndexView(TemplateView):
     """docstring for IndexView"""
     template_name = 'template.index.html'
     def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+        settings = []
+        f = open("settings_sheets.txt", "r")
+        for linea in f:
+            settings.append(linea)
+        f.close()
+        sheet_1 = settings[0]
+        sheet_2 = settings[1]
+        sheet_3 = settings[2]
+        context = {'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3 }  
+        return super().dispatch(*args, **kwargs, **context)
 
 
-class DataFrameView(View):
-    template_name = 'template.dataframe.html'
+class Sheet1View(View):
+    template_name = 'template.sheet1.html'
     def get(self, request, *args, **kwargs):
         count = DataFrameModel.objects.count()
         if count == 0:
             try:
+                print(0)
                 atributos = ['Codigo de Entrega', 'Numero Serie', 'Fuente',
                 'Pais','Codigo de Cliente', 'Nombre cliente',
                 'Dirección', 'Distrito', 'Activo', 'Tamaño',
                 'Imagen/Publicidad', 'Año Fabricación', 'Fecha Instalación', 'Propiedad']
+
                 pwd = os.getcwd()
                 df = pd.read_excel(pwd+'/static/media/parquefrio.xlsb', engine='pyxlsb', sheet_name='INSTALADO', usecols=atributos)
+                
 
                 unique_date = df['Fecha Instalación'].fillna(0)
 
@@ -75,6 +90,7 @@ class DataFrameView(View):
                     objeto = convert_date(i)
                     objeto = pd.to_datetime(objeto, format=('%d/%m/%Y'))
                     date.append(objeto)
+
 
 
                 result = []
@@ -164,17 +180,50 @@ class DataFrameView(View):
                     obj.save()
 
 
-                choices = DataFrameModel.objects.all()
-                context = {'choices':choices}
+                choices = DataFrameModel.objects.order_by('id').reverse()
+
+                settings = []
+                f = open("settings_sheets.txt", "r")
+                for linea in f:
+                    settings.append(linea)
+                f.close()
+                sheet_1 = settings[0]
+                sheet_2 = settings[1]
+                sheet_3 = settings[2]
+
+                context = {'choices':choices, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3 }
                 return render(request, self.template_name, context)
             except:
-                mensaje = 'No existe un archivo adjunto'
-                context = {'mensaje': mensaje}
+                print(1)
+
+                settings = []
+                f = open("settings_sheets.txt", "r")
+                for linea in f:
+                    settings.append(linea)
+                f.close()
+
+                sheet_1 = settings[0]
+                sheet_2 = settings[1]
+                sheet_3 = settings[2]
+
+
+                mensaje = 'there is no attachment'
+                context = {'mensaje': mensaje, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
                 return render(request, self.template_name, context)
 
         else:
-            mensaje = 'La memoria esta llena'
-            context = {'mensaje': mensaje}
+            print(2)
+            settings = []
+            f = open("settings_sheets.txt", "r")
+            for linea in f:
+                settings.append(linea)
+            f.close()
+            sheet_1 = settings[0]
+            sheet_2 = settings[1]
+            sheet_3 = settings[2]
+            mensaje = 'memory is full'
+            choices = DataFrameModel.objects.order_by('id').reverse()
+            context = {'choices':choices, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3 }
             return render(request, self.template_name, context)
 
 
@@ -189,15 +238,33 @@ class CleanerView(View):
         Cleaner.delete()
         Cleaner_Bodega.delete()
         Cleaner_Cloud.delete()
-        mensaje = 'Los marcos de datos han sido eliminados'
-        context = {'mensaje': mensaje}
+        choices = DataFrameModel.objects.all()
+        settings = []
+        f = open("settings_sheets.txt", "r")
+        for linea in f:
+            settings.append(linea)
+        f.close()
+        sheet_1 = settings[0]
+        sheet_2 = settings[1]
+        sheet_3 = settings[2]
+        mensaje = 'the data frames have been removed'
+        context = {'mensaje': mensaje, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
         return render(request, self.template_name, context)
 
 
-class AdjuntarView(View):
-    template_name = 'template.adjuntar.html'
+class UploadView(View):
+    template_name = 'template.upload.html'
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+        settings = []
+        f = open("settings_sheets.txt", "r")
+        for linea in f:
+            settings.append(linea)
+        f.close()
+        sheet_1 = settings[0]
+        sheet_2 = settings[1]
+        sheet_3 = settings[2]
+        context = {'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         uploaded_file = request.FILES['file']
@@ -206,38 +273,73 @@ class AdjuntarView(View):
         path_true = pwd+'/static/media/'+name
         context = {}
         if os.path.exists(path_true):
-            mensaje = 'El archivo ya existe'
-            context = {'mensaje': mensaje}
+            settings = []
+            f = open("settings_sheets.txt", "r")
+            for linea in f:
+                settings.append(linea)
+            f.close()
+            sheet_1 = settings[0]
+            sheet_2 = settings[1]
+            sheet_3 = settings[2]
+            mensaje = 'the file already exists'
+            context = {'mensaje': mensaje, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
             return render(request, self.template_name, context)
         else:
+            settings = []
+            f = open("settings_sheets.txt", "r")
+            for linea in f:
+                settings.append(linea)
+            f.close()
+            sheet_1 = settings[0]
+            sheet_2 = settings[1]
+            sheet_3 = settings[2]
             fs = FileSystemStorage(location='static/media')
             path_article = fs.save(uploaded_file.name, uploaded_file)
             context['url'] = fs.url(path_article)
             url = fs.url(path_article)
-            mensaje = 'El archivo fue adjuntado con exito'
-            context = {'mensaje': mensaje}
+            mensaje = 'the file was successfully attached'
+            context = {'mensaje': mensaje, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
             return render(request, self.template_name, context)
 
-        return redirect('adjuntar')
+        return redirect('upload')
 
 
 class CacheView(View):
     template_name = 'template.index.html'
     def get(self, request, *args, **kwargs):
         try:
+            settings = []
+            f = open("settings_sheets.txt", "r")
+            for linea in f:
+                settings.append(linea)
+            f.close()
+            sheet_1 = settings[0]
+            sheet_2 = settings[1]
+            sheet_3 = settings[2]
             pwd = os.getcwd()
-            remove(pwd+'/static/media/parquefrio.xlsb')
-            mensaje = 'La memoria cache limpia'
-            context = {'mensaje': mensaje}
+            path = pwd+'/static/media/*'
+            files = glob.glob(path)
+            for f in files:
+                os.remove(f)
+            mensaje = 'the cache has been freed'
+            context = {'mensaje': mensaje, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
             return render(request, self.template_name, context)
         except:
-            mensaje = 'La memoria cache ya esta vacia'
-            context = {'mensaje': mensaje}
+            settings = []
+            f = open("settings_sheets.txt", "r")
+            for linea in f:
+                settings.append(linea)
+            f.close()
+            sheet_1 = settings[0]
+            sheet_2 = settings[1]
+            sheet_3 = settings[2]
+            mensaje = 'the cache memory is already released'
+            context = {'mensaje': mensaje, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
             return render(request, self.template_name, context)
 
 
-class BodegaView(View):
-    template_name = 'template.bodega.html'
+class Sheet2View(View):
+    template_name = 'template.sheet2.html'
     def get(self, request, *args, **kwargs):
         count = BodegaModel.objects.count()
         if count == 0:
@@ -250,10 +352,6 @@ class BodegaView(View):
                       'Ingreso taller', 'Propiedad', 'Tamaño']
                 pwd = os.getcwd()
                 df = pd.read_excel(pwd+'/static/media/parquefrio.xlsb', engine='pyxlsb', sheet_name='BODEGA', usecols=atributos)
-                #print(df.dtypes)
-                #print(df.shape)
-                #print(df['Ingreso taller'].fillna(0))
-                #df = df.iloc[:]
 
                 unique_ingreso_taller = df['Ingreso taller'].fillna(0)
                 ingreso_taller = []
@@ -382,20 +480,45 @@ class BodegaView(View):
                     obj = BodegaModel.objects.create(csd_cvz=csd_cvz[i], cet=cet[i], nombre_cet=nombre_cet[i], frec=frec[i], ofvta=ofvta[i], oficina_ventas=oficina_ventas[i], material=material[i], codigo=codigo[i], serie=serie[i], fuente=fuente[i], pais=pais[i], ruta=ruta[i], nombre=nombre[i], direccion=direccion[i], distrito=distrito[i], distrito2=distrito2[i], activo=activo[i], tamaño=tamaño[i], imagen=imagen[i], año=año[i], fecha_ingreso_taller=fecha_ingreso_taller[i], propiedad=propiedad[i])
                     obj.save()
 
-                choices = BodegaModel.objects.all()
+                settings = []
+                f = open("settings_sheets.txt", "r")
+                for linea in f:
+                    settings.append(linea)
+                f.close()
+                sheet_1 = settings[0]
+                sheet_2 = settings[1]
+                sheet_3 = settings[2]
+                choices = BodegaModel.objects.order_by('id').reverse()
                 context = {'choices':choices}
                 return render(request, self.template_name, context)
             except:
-                print('he are')
-                return redirect('index')
+                settings = []
+                f = open("settings_sheets.txt", "r")
+                for linea in f:
+                    settings.append(linea)
+                f.close()
+                sheet_1 = settings[0]
+                sheet_2 = settings[1]
+                sheet_3 = settings[2]
+                mensaje = 'there is no attachment'
+                context = {'mensaje': mensaje, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
+                return render(request, self.template_name, context)
         else:
-            mensaje = 'La memoria esta llena'
-            context = {'mensaje': mensaje}
+            settings = []
+            f = open("settings_sheets.txt", "r")
+            for linea in f:
+                settings.append(linea)
+            f.close()
+            sheet_1 = settings[0]
+            sheet_2 = settings[1]
+            sheet_3 = settings[2]
+            mensaje = 'memory is full'
+            context = {'mensaje': mensaje, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
             return render(request, self.template_name, context)
 
-class CloudView(View):
+class Sheet3View(View):
     """docstring for CloudView."""
-    template_name = 'template.cloud.html'
+    template_name = 'template.sheet3.html'
     def get(self, request, *args, **kwargs):
         count = CloudModel.objects.count()
         if count == 0:
@@ -639,15 +762,99 @@ class CloudView(View):
                 for i in range(len(codigo_cliente)):
                     cloud = CloudModel.objects.create(serie=serie[i], proveedor=proveedor[i], plan=plan[i], dias=dias[i], prioridad=prioridad[i], movimientos=movimientos[i], tipo_servicio=tipo_servicio[i], fecha_recepcion=fecha_recepcion_str[i], codigo_cliente=codigo_cliente[i], sala_ventas=sala_ventas[i], columna1=columna1[i], mesa=mesa[i], ruta=ruta[i], nombre_cliente=nombre_cliente[i], nombre_calle_direccion=nombre_calle_direccion[i], colonia_barrio_distrito=colonia_barrio_distrito[i], departamento=departamento[i], referencia=referencia[i], dni_ruc=dni_ruc[i], contacto=contacto[i], telefono=telefono[i], horario_atencion=horario_atencion[i], modelo_ef=modelo_ef[i], logo=logo[i], tamaño=tamaño[i], activo=activo[i], status_validacion=status_validacion[i], fecha_validacion=fecha_validacion_str[i], motivo_rechazo=motivo_rechazo[i], explicacion_rechazo=explicacion_rechazo[i], bonificacion=bonificacion[i], proceso_ejecucion=proceso_ejecucion[i], fecha_ejecucion=fecha_ejecucion_str[i])
                     cloud.save()
-
-                return render(request, self.template_name)
+                settings = []
+                f = open("settings_sheets.txt", "r")
+                for linea in f:
+                    settings.append(linea)
+                f.close()
+                sheet_1 = settings[0]
+                sheet_2 = settings[1]
+                sheet_3 = settings[2]   
+                choices = CloudModel.objects.order_by('id').reverse()
+                context = {'choices':choices, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
+                return render(request, self.template_name, context)
             except:
                 return render(request, self.template_name)
         else:
-            mensaje = 'La memoria esta llena'
-            context = {'mensaje': mensaje}
+            mensaje = 'memory is full'
+            #context = {'mensaje': mensaje}
+            choices = CloudModel.objects.order_by('id').reverse()     #    all()
+            settings = []
+            f = open("settings_sheets.txt", "r")
+            for linea in f:
+                settings.append(linea)
+            f.close()
+            sheet_1 = settings[0]
+            sheet_2 = settings[1]
+            sheet_3 = settings[2]
+            context = {'choices':choices, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
             return render(request, self.template_name, context)
 
 
     def post(self, request, *args, **kwargs):
         pass
+
+
+class ContextView(View):
+
+    def get(self, request, *args, **kwargs):
+        count = CloudModel.objects.count()
+        print(count)
+        choices = CloudModel.objects.all()
+        context = {'choices':choices}
+        print(type(context))
+        for i in choices:
+            print(i.serie)
+        return redirect('index')
+
+class SettingsView(View):
+    template_name = 'template.settings.html'
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        sheet_1 = request.POST['sheet_1']
+        sheet_2 = request.POST['sheet_2']
+        sheet_3 = request.POST['sheet_3']
+        
+        pwd = os.getcwd()
+        f = open(pwd+"/settings_sheets.txt", "w")
+        f.write(str(sheet_1))
+        f.write('\n' + str(sheet_2))
+        f.write('\n' + str(sheet_3))
+        f.close()
+        settings = []
+        f = open("settings_sheets.txt", "r")
+        for linea in f:
+            settings.append(linea)
+        f.close()
+        return render(request, self.template_name)
+
+
+class Edit3View(View):
+    """docstring for Edit3View."""
+    template_name = 'template.edit.html'
+
+    def get(self, request, id):
+        objs = CloudModel.objects.filter(id=id)
+        for values in objs:
+            print(values.serie)
+        context = {'id':id}
+        # psycopg2
+        engine = create_engine('postgresql+psycopg2://postgres:1uzenla0scuridad@localhost/buscador')
+        #engine.connect()
+        data = pd.read_sql_table('build_cloudmodel', engine) 
+        #queryset = engine.execute("SELECT * FROM build_cloudmodel").fetchall()
+        print(data.head())
+        #import psycopg2
+        #conn_string = "host='localhost' dbname='my_database' user='postgres' password='secret'"
+        #conn = psycopg2.connect(conn_string)
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, id):
+        # = request.POST['']
+        #update = CloudModel.objects.filter(id=id).update()
+        #choices = CloudModel.objects.all()
+        context = {'id':id}
+        return render(request, self.template_name, context)
