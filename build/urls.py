@@ -26,6 +26,8 @@ urlpatterns = [
 	path('context', ContextView.as_view(), name='context'),
     path('settings', SettingsView.as_view(), name='settings'),
     path('sheet3/<int:id>', Edit3View.as_view(), name='sheet3-edit'),
+    path('list', ListDir.as_view(), name='list'),
+    path('file', SheetsView.as_view(), name='sheets'),
 ]
 
 if settings.DEBUG:

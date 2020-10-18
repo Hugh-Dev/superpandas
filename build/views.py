@@ -858,3 +858,30 @@ class Edit3View(View):
         #choices = CloudModel.objects.all()
         context = {'id':id}
         return render(request, self.template_name, context)
+
+class ListDir(View):
+    """docstring for ListDir"""
+    template_name = 'template.index.html'
+    def get(self, request):
+        pwd = os.getcwd()
+        path = '{}/static/media/'.format(pwd)
+        contenido = os.listdir(pwd)
+        files = {}
+        with os.scandir(path) as ficheros:
+            count = 0
+            for fichero in ficheros:
+                name = fichero.name
+                count += 1
+                files['file{}'.format(count)] = name
+        context = {'data': files}
+        return render(request, self.template_name, context)
+        
+class SheetsView(View):
+    """docstring for SheetsView."""
+    template_name = 'template.sheets.html'
+    def post(self, request):
+        filename = request.POST['choosefile']
+        print(filename)
+        return render(request, self.template_name)
+
+        
