@@ -27,7 +27,7 @@ import sys
 import os.path
 import time
 from os import remove
-
+import xlrd
 #https://docs.djangoproject.com/en/3.0/topics/class-based-views/intro/
 #https://docs.djangoproject.com/en/3.1/ref/models/querysets/
 # Create your views here.
@@ -59,8 +59,21 @@ class IndexView(TemplateView):
         sheet_1 = settings[0]
         sheet_2 = settings[1]
         sheet_3 = settings[2]
-        context = {'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3 }  
-        return super().dispatch(*args, **kwargs, **context)
+        context = {'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3 }
+        pwd = os.getcwd()
+        path = '{}/static/media/'.format(pwd)
+        files = {}
+        with os.scandir(path) as ficheros:
+            count = 0
+            for fichero in ficheros:
+                name = fichero.name
+                count += 1
+                files['file{}'.format(count)] = name
+        if len(files) is 0:
+            context = {'mensaje':'Need to upload files'}
+            return super().dispatch(*args, **kwargs, **context)
+        else:
+            return redirect('list')
 
 
 class Sheet1View(View):
@@ -299,7 +312,7 @@ class UploadView(View):
             url = fs.url(path_article)
             mensaje = 'the file was successfully attached'
             context = {'mensaje': mensaje, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
-            return render(request, self.template_name, context)
+            return HttpResponseRedirect('list/files', context)
 
         return redirect('upload')
 
@@ -877,11 +890,93 @@ class ListDir(View):
         return render(request, self.template_name, context)
         
 class SheetsView(View):
-    """docstring for SheetsView."""
+    """docstring for SheetsView.
+    xls, xlsx, xlsm, xlsb, odf, ods"""
     template_name = 'template.sheets.html'
     def post(self, request):
         filename = request.POST['choosefile']
         print(filename)
-        return render(request, self.template_name)
+        pwd = os.getcwd()
+        path = '{}/static/media/{}'.format(pwd, filename)
+        file, ext = os.path.splitext(filename)
+        if ext == '.xlsb':
+            xls = pd.ExcelFile(path, engine='pyxlsb')
+            sheets = xls.sheet_names
+            names = {}
+            count = 0
+            for name in sheets:
+                count += 1
+                names['name{}'.format(count)] = name
+            context = {'sheets':names, 'filename':filename}
+            return render(request, self.template_name, context)
 
-        
+        elif ext == '.xlsm':
+            xls = pd.ExcelFile(path)
+            sheets = xls.sheet_names
+            names = {}
+            count = 0
+            for name in sheets:
+                count += 1
+                names['name{}'.format(count)] = name
+            context = {'sheets':names, 'filename':filename}
+            return render(request, self.template_name, context)
+
+        elif ext == '.xlsx':
+            xls = pd.ExcelFile(path)
+            sheets = xls.sheet_names
+            names = {}
+            count = 0
+            for name in sheets:
+                count += 1
+                names['name{}'.format(count)] = name
+            context = {'sheets':names, 'filename':filename}
+            return render(request, self.template_name, context)
+        else:
+            return render(request, self.template_name)
+
+
+
+class RsheetView(View):
+    """docstring for RsheetView."""
+    template_name = 'template.rsheets.html'
+    def post(self, request, file):
+        sheetname = request.POST['choosesheet']
+        pwd = os.getcwd()
+        path = '{}/static/media/{}'.format(pwd, file)
+        df = pd.read_excel(path, index_col=0, sheet_name=sheetname)
+        columns = df.columns
+        columns_dict = {}
+        count = 0
+        for name in columns:
+            count += 1
+            columns_dict['column{}'.format(count)] = name
+        print(columns_dict)
+        context = {'columns':columns_dict, 'filename':file, 'sheetname':sheetname}
+        return render(request, self.template_name, context)
+
+class RcsheetView(View):
+    """docstring for RcsheetView."""
+    template_name = 'template.rcsheets.html'
+    def post(self, request, sheet, file):
+        pwd = os.getcwd()
+        path = '{}/static/media/{}'.format(pwd, file)
+        df = pd.read_excel(path, index_col=0, sheet_name=sheet)
+        columns = df.columns
+        dictcol = {}
+        count = 0
+        for name in columns:
+            count += 1
+            dictcol['column{}'.format(count)] = name
+        lcolumns = []
+        for i in range(1, len(dictcol)+1):
+            try:
+                lcolumns.append(request.POST['column{}'.format(i)])
+            except:
+                pass
+        df = pd.read_excel(path, index_col=None, sheet_name=sheet, usecols=lcolumns)
+        json = df.to_json() 
+        print(df) 
+        context = {'filename':file, 'choices':json}
+        return render(request, self.template_name, context)
+
+

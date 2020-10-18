@@ -26,8 +26,10 @@ urlpatterns = [
 	path('context', ContextView.as_view(), name='context'),
     path('settings', SettingsView.as_view(), name='settings'),
     path('sheet3/<int:id>', Edit3View.as_view(), name='sheet3-edit'),
-    path('list', ListDir.as_view(), name='list'),
-    path('file', SheetsView.as_view(), name='sheets'),
+    path('files', ListDir.as_view(), name='list'),
+    path('list/sheetnames', SheetsView.as_view(), name='sheets'),
+    path('read/sheet/columns/<str:file>', RsheetView.as_view(), name='rsheet'),
+    path('read/<str:sheet>/<str:file>', RcsheetView.as_view(), name='rcsheet'),
 ]
 
 if settings.DEBUG:

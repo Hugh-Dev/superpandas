@@ -12,22 +12,6 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarText">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link text-muted" href="{% url 'sheet_1' %}"> 
-          <i class="far fa-file text-muted fa-2x"></i> {{sheet_1}}
-          <span class="sr-only">(current)</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'sheet_2' %}">
-          <i class="far fa-file text-muted fa-2x"></i> {{sheet_2}}
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'sheet_3' %}">
-          <i class="far fa-file text-muted fa-2x"></i> {{sheet_3}}
-        </a>
-      </li>
     </ul>
     <span class="navbar-text">
       <a class="btn btn-primary btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Upload File" href="{% url 'upload' %}" role="button">
