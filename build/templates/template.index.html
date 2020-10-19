@@ -17,9 +17,6 @@
         <i class="fas fa-file-upload text-white fa-2x"></i>
       </a>
       <a class="btn btn-primary btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Cleaner all folder" href="{% url 'cache' %}" role="button">
-        <i class="fas fa-folder text-white fa-2x"></i>
-      </a>
-      <a class="btn btn-primary btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Cleaner all data" href="{% url 'cleaner' %}" role="button">
         <i class="fas fa-trash text-white fa-2x"></i>
       </a>
       <a class="btn btn-primary btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Settings" href="{% url 'settings' %}" role="button">
@@ -30,13 +27,20 @@
 </nav>
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-  <h1 class="display-4 text-primary">Dashboard</h1>
+    {% if data %}
+    <h1 class="display-4 text-primary">Dashboard</h1>
+    {% endif %}
     {% if mensaje %}
     <div class="alert border border-warning alert-warning alert-dismissible fade show" role="alert">
-      <strong>{{mensaje}}</strong>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
+      <p class="h1">
+        <i class="fas fa-file-upload text-warning fa-2x"></i>
+      </p>
+      <p class="h6">
+        <strong>{{mensaje}}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </p>
     </div>
     {% endif %}
 </div>
@@ -44,7 +48,7 @@
 <div class="container">
   <div class="row justify-content-md-center">
     <div class="col col-lg-6">
-      <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded card-hover">
+      <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded">
         <div class="card-body text-center">
           <i class="far fa-file text-muted fa-4x"></i>
         </div>
@@ -61,7 +65,7 @@
             {% csrf_token %}
             <div class="form-group">
               <div class="form-group">
-                <label for="Selectfile" id="filexls" aria-describedby="textHelp">Choose file name</label>
+                <label for="Selectfile" id="filexls" aria-describedby="textHelp">Choose file name:</label>
                 <select class="form-control form-control-sm" id="Selectfile" name="choosefile" required="true">
                   <option name="" value="">...</option>
                   {% for name, file in data.items %}

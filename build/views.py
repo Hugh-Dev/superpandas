@@ -9,6 +9,8 @@ from django.shortcuts import render
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
+from django_datatables_view.base_datatable_view import BaseDatatableView
+from django.utils.html import escape
 from sqlalchemy import create_engine
 from django.views.generic import TemplateView, View
 from django.utils.decorators import method_decorator
@@ -19,8 +21,10 @@ import datetime
 from datetime import datetime
 from .models import *
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from demo.settings import STATIC_ROOT, STATIC_URL
 from django.core.files.storage import FileSystemStorage
+import json
 import re
 import glob
 import sys
@@ -312,7 +316,7 @@ class UploadView(View):
             url = fs.url(path_article)
             mensaje = 'the file was successfully attached'
             context = {'mensaje': mensaje, 'sheet_1': sheet_1, 'sheet_2': sheet_2, 'sheet_3': sheet_3}
-            return HttpResponseRedirect('list/files', context)
+            return HttpResponseRedirect('files', context)
 
         return redirect('upload')
 
@@ -895,7 +899,6 @@ class SheetsView(View):
     template_name = 'template.sheets.html'
     def post(self, request):
         filename = request.POST['choosefile']
-        print(filename)
         pwd = os.getcwd()
         path = '{}/static/media/{}'.format(pwd, filename)
         file, ext = os.path.splitext(filename)
@@ -940,43 +943,103 @@ class RsheetView(View):
     """docstring for RsheetView."""
     template_name = 'template.rsheets.html'
     def post(self, request, file):
+
         sheetname = request.POST['choosesheet']
-        pwd = os.getcwd()
-        path = '{}/static/media/{}'.format(pwd, file)
-        df = pd.read_excel(path, index_col=0, sheet_name=sheetname)
-        columns = df.columns
-        columns_dict = {}
-        count = 0
-        for name in columns:
-            count += 1
-            columns_dict['column{}'.format(count)] = name
-        print(columns_dict)
-        context = {'columns':columns_dict, 'filename':file, 'sheetname':sheetname}
-        return render(request, self.template_name, context)
+        fl, ext = os.path.splitext(file)
+        
+        if ext == '.xlsb':
+            pwd = os.getcwd()
+            path = '{}/static/media/{}'.format(pwd, file)
+            print(path)
+            df = pd.read_excel(path, engine='pyxlsb', index_col=None, sheet_name=sheetname)
+            columns = df.columns
+            columns_dict = {}
+            count = 0
+            for name in columns:
+                count += 1
+                columns_dict['column{}'.format(count)] = name
+            context = {'columns':columns_dict, 'filename':file, 'sheetname':sheetname}
+            return render(request, self.template_name, context)
+
+        if ext == '.xlsm':
+            pwd = os.getcwd()
+            path = '{}/static/media/{}'.format(pwd, file)
+            print(path)
+            df = pd.read_excel(path, index_col=None, sheet_name=sheetname)
+            columns = df.columns
+            columns_dict = {}
+            count = 0
+            for name in columns:
+                count += 1
+                columns_dict['column{}'.format(count)] = name
+            context = {'columns':columns_dict, 'filename':file, 'sheetname':sheetname}
+            return render(request, self.template_name, context)
+
+        if ext == '.xlsx':
+            pwd = os.getcwd()
+            path = '{}/static/media/{}'.format(pwd, file)
+            print(path)
+            df = pd.read_excel(path, index_col=None, sheet_name=sheetname)
+            columns = df.columns
+            columns_dict = {}
+            count = 0
+            for name in columns:
+                count += 1
+                columns_dict['column{}'.format(count)] = name
+            context = {'columns':columns_dict, 'filename':file, 'sheetname':sheetname}
+            return render(request, self.template_name, context)
+
+        else:
+            return render(request, self.template_name)
+
+
 
 class RcsheetView(View):
     """docstring for RcsheetView."""
     template_name = 'template.rcsheets.html'
     def post(self, request, sheet, file):
-        pwd = os.getcwd()
-        path = '{}/static/media/{}'.format(pwd, file)
-        df = pd.read_excel(path, index_col=0, sheet_name=sheet)
-        columns = df.columns
-        dictcol = {}
-        count = 0
-        for name in columns:
-            count += 1
-            dictcol['column{}'.format(count)] = name
-        lcolumns = []
-        for i in range(1, len(dictcol)+1):
-            try:
-                lcolumns.append(request.POST['column{}'.format(i)])
-            except:
-                pass
-        df = pd.read_excel(path, index_col=None, sheet_name=sheet, usecols=lcolumns)
-        json = df.to_json() 
-        print(df) 
-        context = {'filename':file, 'choices':json}
-        return render(request, self.template_name, context)
+
+        fl, ext = os.path.splitext(file)
+
+        if ext == '.xlsb':
+            pwd = os.getcwd()
+            path = '{}/static/media/{}'.format(pwd, file)
+            df = pd.read_excel(path, engine='pyxlsb', index_col=None, sheet_name=sheet)
+            columns = df.columns
+            dictcol = {}
+            count = 0
+            for name in columns:
+                count += 1
+                dictcol['column{}'.format(count)] = name
+            lcolumns = []
+            for i in range(1, len(dictcol)+1):
+                try:
+                    lcolumns.append(request.POST['column{}'.format(i)])
+                except:
+                    pass
+            df = pd.read_excel(path, engine='pyxlsb', index_col=None, sheet_name=sheet, usecols=lcolumns)
+            df = df.loc[20:25]
+
+            url = '{}/static/media/{}'.format('http://127.0.0.1:8000', file)
+            print(url)
+            context = {'url':url}
+            class_bootstrap = ['table', 'table-striped', 'table-bordered', 'display', 'text-primary', 'h7']
+            table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=True, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
+            pwd = os.getcwd()
+  
+            template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
+            template_file.write(table)
+            template_file.close()
+            context = {'table':table}
+            return render(request, self.template_name, context)
+
+            #result = df.to_json(orient="split")
+            #parsed = json.loads(result)
+            #j = json.dumps(parsed, indent=4)
+
+            #return HttpResponse(j, content_type='application/json;charset=utf-8')
+
+        return render(request, self.template_name)
+
 
 
