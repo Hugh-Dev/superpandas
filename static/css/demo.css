@@ -1,15 +1,4 @@
-.btn-outline-ignis {
-      color: #00878f;
-      border-color: #00878f;
-    }
-    .btn-outline-ignis:hover {
-      color: #fff;
-      background-color: #00878f;
-      border-color: #00878f;
-    }
-    .btn-outline-ignis:focus, .btn-outline-ignis.focus {
-      box-shadow: 0 0 0 0.2rem rgba(38, 29, 65, 1);
-    }
+
     .btn-purple {
       color: #fff;
       background-color: #00878f;
@@ -54,7 +43,7 @@
     }
 
     .top-btn:hover {
-      background-color: #17a2b8; /* Let's get social Get news from Tesseract Inc*/
+      background-color: #17a2b8;
     }
 
     .cube{
@@ -79,6 +68,6 @@
     }
 
     /*.jumbotron {
-      background-image: url("../img/florian-olivo-4hbJ-eymZ1o-unsplash.jpg");
+      background-image: url("../img/.jpg");
       background-size: cover;
     }*/

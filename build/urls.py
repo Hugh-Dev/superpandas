@@ -5,30 +5,25 @@ from .views import *
 from django.conf import settings
 from django.conf.urls.static import static
 
-settings_sheets = []
-f = open("settings_sheets.txt", "r")
+cfg = []
+f = open("cfg.txt", "r")
 for linea in f:
-    settings_sheets.append(linea)
+    cfg.append(linea)
 f.close()
-sheet_1 = settings_sheets[0]
-sheet_2 = settings_sheets[1]
-sheet_3 = settings_sheets[2]
+name_app = cfg[0]
+name_enterprise = cfg[1]
 
 
 urlpatterns = [
 	path('', IndexView.as_view(), name='index'),
-    path('sheet1', Sheet1View.as_view(), name='sheet_1'),
-    path('cleaner', CleanerView.as_view(), name='cleaner'),
     path('upload', UploadView.as_view(), name='upload'),
     path('cache', CacheView.as_view(), name='cache'),
-    path('sheet2', Sheet2View.as_view(), name='sheet_2'),
-	path('sheet3', Sheet3View.as_view(), name='sheet_3'),
-	path('context', ContextView.as_view(), name='context'),
     path('settings', SettingsView.as_view(), name='settings'),
-    path('sheet3/<int:id>', Edit3View.as_view(), name='sheet3-edit'),
     path('files', ListDir.as_view(), name='list'),
     path('list/sheetnames', SheetsView.as_view(), name='sheets'),
+    path('list/sheetnames/<str:file>', BackSheetsView.as_view(), name='backsheets'),
     path('read/sheet/columns/<str:file>', RsheetView.as_view(), name='rsheet'),
+    path('read/<str:sheet>/columns/<str:file>', BackRsheetView.as_view(), name='backrsheet'),
     path('read/<str:sheet>/<str:file>', RcsheetView.as_view(), name='rcsheet'),
 ]
 

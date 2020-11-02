@@ -28,9 +28,9 @@
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     {% if data %}
-    <h1 class="display-4 text-primary">Dashboard</h1>
+    <h1 class="display-4 text-primary">{{name_app}}<span class="badge badge-pill badge-secondary">{{name_enterprise}}</span></h1>
     <h3 class="text-primary">Read - Filter - Debugging</h3>
-    <h5 class="text-primary"><span class="badge badge-primary">xlsx - xlsb - xlsm - csv</span></h5>
+    
     {% endif %}
     {% if mensaje %}
     <div class="alert border border-warning alert-warning alert-dismissible fade show" role="alert">
@@ -53,6 +53,11 @@
       <div class="card mb-4 shadow-sm shadow-lg p-3 mb-5 bg-white rounded">
         <div class="card-body text-center">
           <i class="far fa-file text-muted fa-4x"></i>
+          <h5 class="text-primary" style="margin-top: 10px;">
+            <span class="badge badge-primary">
+              xlsx - xlsb - xlsm - csv
+            </span>
+          </h5>
         </div>
           <ul class="h6 list-unstyled text-muted">
               <ul>
