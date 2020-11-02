@@ -12,31 +12,12 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarText">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link text-muted" href="{% url 'sheet_1' %}"> 
-          <i class="far fa-file text-muted fa-2x"></i> {{sheet_1}}
-          <span class="sr-only">(current)</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'sheet_2' %}">
-          <i class="far fa-file text-muted fa-2x"></i> {{sheet_2}}
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'sheet_3' %}">
-          <i class="far fa-file text-muted fa-2x"></i> {{sheet_3}}
-        </a>
-      </li>
     </ul>
     <span class="navbar-text">
       <a class="btn btn-primary btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Upload File" href="{% url 'upload' %}" role="button">
         <i class="fas fa-file-upload text-white fa-2x"></i>
       </a>
       <a class="btn btn-primary btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Cleaner all folder" href="{% url 'cache' %}" role="button">
-        <i class="fas fa-folder text-white fa-2x"></i>
-      </a>
-      <a class="btn btn-primary btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Cleaner all data" href="{% url 'cleaner' %}" role="button">
         <i class="fas fa-trash text-white fa-2x"></i>
       </a>
       <a class="btn btn-primary btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Settings" href="{% url 'settings' %}" role="button">
@@ -71,19 +52,19 @@
                   <form class="" action="{% url 'settings' %}" method="post">
                     {% csrf_token %}
                     <div class="form-group">
-                      <input class="form-control form-control-sm" type="text" placeholder="Set sheet name 1" name="sheet_1" required="true">
-                      <small id="emailHelp" class="form-text text-muted">Enter the name you want to set for sheet 1</small>
+                      <input class="form-control form-control-sm" type="text" placeholder="Set sheet" name="sheet_1" required="true">
+                      <small id="emailHelp" class="form-text text-muted">Enter the name you want to set</small>
                     </div>
                     <div class="form-group">
-                      <input class="form-control form-control-sm" type="text" placeholder="Set sheet name 2" name="sheet_2" required="true">
-                      <small id="emailHelp" class="form-text text-muted">Enter the name you want to set for sheet 2</small>
+                      <input class="form-control form-control-sm" type="text" placeholder="Set sheet" name="sheet_2" required="true">
+                      <small id="emailHelp" class="form-text text-muted">Enter the name you want to set</small>
                     </div>
                     <div class="form-group">
-                      <input class="form-control form-control-sm" type="text" placeholder="Set sheet name 3" name="sheet_3" required="true">
-                      <small id="emailHelp" class="form-text text-muted">Enter the name you want to set for sheet 3</small>
+                      <input class="form-control form-control-sm" type="text" placeholder="Set sheet" name="sheet_3" required="true">
+                      <small id="emailHelp" class="form-text text-muted">Enter the name you want to set</small>
                     </div>
                     <div class="form-group">
-                      <input class="form-control form-control-sm btn btn-primary btn-sm" type="submit">
+                      <input class="form-control form-control-sm btn btn-primary btn-sm" type="submit" value="submit">
                     </div>
                   </form>
                 </div>

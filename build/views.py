@@ -9,9 +9,9 @@ from django.shortcuts import render
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
-from django_datatables_view.base_datatable_view import BaseDatatableView
-from django.utils.html import escape
-from sqlalchemy import create_engine
+#from django_datatables_view.base_datatable_view import BaseDatatableView
+#from django.utils.html import escape
+#from sqlalchemy import create_engine
 from django.views.generic import TemplateView, View
 from django.utils.decorators import method_decorator
 from .models import *
@@ -38,7 +38,7 @@ import xlrd
 
 """
 Tesseract Inc
-@author Ing. Alejandro Ramírez
+@author Hugo Ramírez
 @copyright Tesseract Inc
 @cto Tesseract Inc
 @date 01-09-2020
@@ -1018,26 +1018,78 @@ class RcsheetView(View):
                 except:
                     pass
             df = pd.read_excel(path, engine='pyxlsb', index_col=None, sheet_name=sheet, usecols=lcolumns)
-            df = df.loc[20:25]
+
 
             url = '{}/static/media/{}'.format('http://127.0.0.1:8000', file)
-            print(url)
-            context = {'url':url}
+
             class_bootstrap = ['table', 'table-striped', 'table-bordered', 'display', 'text-primary', 'h7']
             table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=True, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
             pwd = os.getcwd()
-  
             template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
             template_file.write(table)
             template_file.close()
-            context = {'table':table}
-            return render(request, self.template_name, context)
+         
+            return render(request, self.template_name)
 
-            #result = df.to_json(orient="split")
-            #parsed = json.loads(result)
-            #j = json.dumps(parsed, indent=4)
+        if ext == '.xlsm':
+            pwd = os.getcwd()
+            path = '{}/static/media/{}'.format(pwd, file)
+            df = pd.read_excel(path, index_col=None, sheet_name=sheet)
+            columns = df.columns
+            dictcol = {}
+            count = 0
+            for name in columns:
+                count += 1
+                dictcol['column{}'.format(count)] = name
+            lcolumns = []
+            for i in range(1, len(dictcol)+1):
+                try:
+                    lcolumns.append(request.POST['column{}'.format(i)])
+                except:
+                    pass
+            df = pd.read_excel(path, index_col=None, sheet_name=sheet, usecols=lcolumns)
 
-            #return HttpResponse(j, content_type='application/json;charset=utf-8')
+
+            url = '{}/static/media/{}'.format('http://127.0.0.1:8000', file)
+            
+            class_bootstrap = ['table', 'table-striped', 'table-bordered', 'display', 'text-primary', 'h7']
+            table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=True, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
+            pwd = os.getcwd()
+            template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
+            template_file.write(table)
+            template_file.close()
+         
+            return render(request, self.template_name)
+
+        if ext == '.xlsx':
+            pwd = os.getcwd()
+            path = '{}/static/media/{}'.format(pwd, file)
+            df = pd.read_excel(path, index_col=None, sheet_name=sheet)
+            columns = df.columns
+            dictcol = {}
+            count = 0
+            for name in columns:
+                count += 1
+                dictcol['column{}'.format(count)] = name
+            lcolumns = []
+            for i in range(1, len(dictcol)+1):
+                try:
+                    lcolumns.append(request.POST['column{}'.format(i)])
+                except:
+                    pass
+            df = pd.read_excel(path, index_col=None, sheet_name=sheet, usecols=lcolumns)
+
+
+            url = '{}/static/media/{}'.format('http://127.0.0.1:8000', file)
+            
+            class_bootstrap = ['table', 'table-striped', 'table-bordered', 'display', 'text-primary', 'h7']
+            table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=True, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
+            pwd = os.getcwd()
+            template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
+            template_file.write(table)
+            template_file.close()
+         
+            return render(request, self.template_name, {'url':url})
 
         return render(request, self.template_name)
 

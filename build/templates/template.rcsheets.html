@@ -35,6 +35,12 @@
     <strong>{{mensaje}}</strong>
   </div>
   {% endif %}
+  {% if url %}
+  <div class="alert border border-primary alert-primary text-left rounded-0" role="alert">
+    <a class="btn btn-sm btn-primary" href="{{url}}"><strong>Download</strong></a>
+    <a class="btn btn-sm btn-primary" href="{{url}}"><strong>Edit</strong></a>
+  </div>
+  {% endif %}
   <div class="card-body">
     <div class="table-responsive">
         {% include 'template.table.html' %}
