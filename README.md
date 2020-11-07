@@ -1,5 +1,5 @@
+![compass-fill](screenshot/Pandas.png)
 # Superpandas
-
 <p align=justify> Superpandas es un proyecto de código abierto que pretende mostrar las bondades de la librería Pandas en un entorno web como Django aunque este puede desarrollarse tranquilamente en cualquier otro Framework ya sea Flask, Pyramid o Web2py. Las principales funciones de esta aplicación son: permitir al usuario cargar archivos de tipo hoja de cálculo ha un Dashboard y así poder filtrar los elemento de la hoja, para la Versión Community he liberado funciones básicas de manipulación como la posibilidad de cargar cuatro formatos de archivos, El poder de seleccionar la hoja de calculo en la que se desea trabajar y el detalle de las columnas que serán cargadas aun DataTable para poder filtrar los datos de manera limpia y ordenada, desde una interfaz más amigable comparada con las que brindan las herramientas de hoja de cálculo.</p>
 
 > ### Requirements:
