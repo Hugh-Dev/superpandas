@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 
-"""▌ ▌      ▌        ▐  ▌                 
+"""▌ ▌      ▌        ▐  ▌
    ▙▄▌▌ ▌▞▀▌▛▀▖▛▀▖▌ ▌▜▀ ▛▀▖▞▀▖▛▀▖▞▀▖▞▀▖▙▀▖
-   ▌ ▌▌ ▌▚▄▌▌ ▌▙▄▘▚▄▌▐ ▖▌ ▌▌ ▌▌ ▌▛▀ ▛▀ ▌  
+   ▌ ▌▌ ▌▚▄▌▌ ▌▙▄▘▚▄▌▐ ▖▌ ▌▌ ▌▌ ▌▛▀ ▛▀ ▌
    ▘ ▘▝▀▘▗▄▘▘ ▘▌  ▗▄▘ ▀ ▘ ▘▝▀ ▘ ▘▝▀▘▝▀▘▘  2020"""
 
 from django.shortcuts import render, redirect
@@ -33,7 +33,7 @@ import xlrd
 # Create your views here.
 
 """
-Hughpythoneer 
+Hughpythoneer
 @author Hugo Ramírez
 @copyright Hughpythoneer
 @cto Hughpythoneer
@@ -42,10 +42,10 @@ Hughpythoneer
 """
 
 """
-Clase que controla el template Index y de no existir 
-ningun archivo en el directorio de trabajo envia un 
-mensaje comunicando el hecho de lo contrario 
-listara los archivos existentes en un campo de seleccion""" 
+Clase que controla el template Index y de no existir
+ningun archivo en el directorio de trabajo envia un
+mensaje comunicando el hecho de lo contrario
+listara los archivos existentes en un campo de seleccion"""
 class IndexView(TemplateView):
     """docstring for IndexView"""
     template_name = 'template.index.html'
@@ -207,7 +207,7 @@ class ListDir(View):
         name_enterprise = cfg[1]
         context = {'data': files, 'name_app': name_app, 'name_enterprise': name_enterprise}
         return render(request, self.template_name, context)
-        
+
 class SheetsView(View):
     """docstring for SheetsView"""
     template_name = 'template.sheets.html'
@@ -261,7 +261,7 @@ class SheetsView(View):
             names['name'] = sheet
             context = {'sheets':names, 'filename':filename, 'name_app':name_app}
             return render(request, self.template_name, context)
-            
+
         else:
             return render(request, self.template_name)
 
@@ -335,11 +335,10 @@ class RsheetView(View):
 
         sheetname = request.POST['choosesheet']
         fl, ext = os.path.splitext(file)
-        
+
         if ext == '.xlsb':
             pwd = os.getcwd()
             path = '{}/static/media/{}'.format(pwd, file)
-            print(path)
             df = pd.read_excel(path, engine='pyxlsb', index_col=None, sheet_name=sheetname)
             columns = df.columns
             columns_dict = {}
@@ -353,7 +352,6 @@ class RsheetView(View):
         if ext == '.xlsm':
             pwd = os.getcwd()
             path = '{}/static/media/{}'.format(pwd, file)
-            print(path)
             df = pd.read_excel(path, index_col=None, sheet_name=sheetname)
             columns = df.columns
             columns_dict = {}
@@ -367,7 +365,6 @@ class RsheetView(View):
         if ext == '.xlsx':
             pwd = os.getcwd()
             path = '{}/static/media/{}'.format(pwd, file)
-            print(path)
             df = pd.read_excel(path, index_col=None, sheet_name=sheetname)
             columns = df.columns
             columns_dict = {}
@@ -381,7 +378,6 @@ class RsheetView(View):
         if ext == '.csv':
             pwd = os.getcwd()
             path = '{}/static/media/{}'.format(pwd, file)
-            print(path)
             df = pd.read_csv(path, index_col=None)
             columns = df.columns
             columns_dict = {}
@@ -438,7 +434,7 @@ class RcsheetView(View):
             template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
             template_file.write(table)
             template_file.close()
-         
+
             return render(request, self.template_name)
 
         if ext == '.xlsm':
@@ -461,14 +457,14 @@ class RcsheetView(View):
 
 
             url = '{}/static/media/{}'.format('http://127.0.0.1:8000', file)
-            
+
             class_bootstrap = ['table', 'table-striped', 'table-bordered', 'display', 'text-primary', 'h7']
             table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=False, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
             pwd = os.getcwd()
             template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
             template_file.write(table)
             template_file.close()
-         
+
             return render(request, self.template_name)
 
         if ext == '.xlsx':
@@ -491,14 +487,14 @@ class RcsheetView(View):
 
 
             url = '{}/static/media/{}'.format('http://127.0.0.1:8000', file)
-            
+
             class_bootstrap = ['table', 'table-striped', 'table-bordered', 'display', 'text-primary', 'h7']
             table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=False, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
             pwd = os.getcwd()
             template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
             template_file.write(table)
             template_file.close()
-         
+
             return render(request, self.template_name, {'url':url})
 
         if ext == '.csv':
@@ -526,9 +522,7 @@ class RcsheetView(View):
             template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
             template_file.write(table)
             template_file.close()
-            print(lcolumns)
+        
             return render(request, self.template_name, {'url':url, 'filename':file, 'sheetname':sheet, 'lcolumns':lcolumns})
 
         return render(request, self.template_name)
-
-
