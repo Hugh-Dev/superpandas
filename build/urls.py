@@ -23,7 +23,6 @@ urlpatterns = [
     path('list/sheetnames', SheetsView.as_view(), name='sheets'),
     path('list/sheetnames/<str:file>', BackSheetsView.as_view(), name='backsheets'),
     path('read/sheet/columns/<str:file>', RsheetView.as_view(), name='rsheet'),
-    path('read/<str:sheet>/columns/<str:file>', BackRsheetView.as_view(), name='backrsheet'),
     path('read/<str:sheet>/<str:file>', RcsheetView.as_view(), name='rcsheet'),
 ]
 

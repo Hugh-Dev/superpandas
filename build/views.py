@@ -1,6 +1,5 @@
-from django.shortcuts import render
-
-# Create your views here.
+#!/usr/bin/python3
+# -*- coding: UTF-8 -*-
 
 """▌ ▌      ▌        ▐  ▌                 
    ▙▄▌▌ ▌▞▀▌▛▀▖▛▀▖▌ ▌▜▀ ▛▀▖▞▀▖▛▀▖▞▀▖▞▀▖▙▀▖
@@ -8,6 +7,7 @@ from django.shortcuts import render
    ▘ ▘▝▀▘▗▄▘▘ ▘▌  ▗▄▘ ▀ ▘ ▘▝▀ ▘ ▘▝▀▘▝▀▘▘  2020"""
 
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic import TemplateView, View
 from django.utils.decorators import method_decorator
@@ -41,6 +41,11 @@ Hughpythoneer
 @version 2.0.0
 """
 
+"""
+Clase que controla el template Index y de no existir 
+ningun archivo en el directorio de trabajo envia un 
+mensaje comunicando el hecho de lo contrario 
+listara los archivos existentes en un campo de seleccion""" 
 class IndexView(TemplateView):
     """docstring for IndexView"""
     template_name = 'template.index.html'
@@ -68,8 +73,9 @@ class IndexView(TemplateView):
         else:
             return redirect('list')
 
-
+""""""
 class UploadView(View):
+    """docstring for UploadView"""
     template_name = 'template.upload.html'
     def get(self, request, *args, **kwargs):
         cfg = []
@@ -84,39 +90,45 @@ class UploadView(View):
 
     def post(self, request, *args, **kwargs):
         uploaded_file = request.FILES['file']
-        name = uploaded_file.name
-        pwd = os.getcwd()
-        path_true = pwd+'/static/media/'+name
-        context = {}
-        if os.path.exists(path_true):
-            cfg = []
-            f = open("cfg.txt", "r")
-            for linea in f:
-                cfg.append(linea)
-            f.close()
-            name_app = cfg[0]
-            name_enterprise = cfg[1]
-            mensaje = 'the file already exists'
-            context = {'mensaje': mensaje, 'name_app': name_app, 'name_enterprise': name_enterprise}
-            return render(request, self.template_name, context)
+        file, ext = os.path.splitext(str(uploaded_file))
+        if ext == '.csv' or ext == 'xlsb' or ext == 'xlsm' or ext == 'xlsx':
+            name = uploaded_file.name
+            pwd = os.getcwd()
+            path_true = pwd+'/static/media/'+name
+            context = {}
+            if os.path.exists(path_true):
+                cfg = []
+                f = open("cfg.txt", "r")
+                for linea in f:
+                    cfg.append(linea)
+                f.close()
+                name_app = cfg[0]
+                name_enterprise = cfg[1]
+                mensaje = 'the file already exists'
+                context = {'mensaje': mensaje, 'name_app': name_app, 'name_enterprise': name_enterprise}
+                return render(request, self.template_name, context)
+            else:
+                cfg = []
+                f = open("cfg.txt", "r")
+                for linea in f:
+                    cfg.append(linea)
+                f.close()
+                name_app = cfg[0]
+                name_enterprise = cfg[1]
+                fs = FileSystemStorage(location='static/media')
+                path_article = fs.save(uploaded_file.name, uploaded_file)
+                context['url'] = fs.url(path_article)
+                url = fs.url(path_article)
+                mensaje = 'the file was successfully attached'
+                context = {'mensaje': mensaje, 'name_app': name_app, 'name_enterprise': name_enterprise}
+                return HttpResponseRedirect('files', context)
         else:
-            cfg = []
-            f = open("cfg.txt", "r")
-            for linea in f:
-                cfg.append(linea)
-            f.close()
-            name_app = cfg[0]
-            name_enterprise = cfg[1]
-            fs = FileSystemStorage(location='static/media')
-            path_article = fs.save(uploaded_file.name, uploaded_file)
-            context['url'] = fs.url(path_article)
-            url = fs.url(path_article)
-            mensaje = 'the file was successfully attached'
-            context = {'mensaje': mensaje, 'name_app': name_app, 'name_enterprise': name_enterprise}
-            return HttpResponseRedirect('files', context)
+            mensaje = 'unsupported file'
+            context = {'mensaje': mensaje}
+            return render(request, self.template_name, context)
 
-        return redirect('upload')
-
+        #return redirect('upload')
+        #return HttpResponseRedirect(reverser('upload', args=context))
 
 class CacheView(View):
     template_name = 'template.index.html'
@@ -249,7 +261,7 @@ class SheetsView(View):
             names['name'] = sheet
             context = {'sheets':names, 'filename':filename, 'name_app':name_app}
             return render(request, self.template_name, context)
-
+            
         else:
             return render(request, self.template_name)
 
@@ -391,90 +403,15 @@ class RsheetView(View):
             return render(request, self.template_name)
 
 
-class BackRsheetView(View):
-    """docstring for RsheetView."""
-    template_name = 'template.rsheets.html'
-    def get(self, request, file, sheetname):
-
-        sheetname = sheetname
-        fl, ext = os.path.splitext(file)
-        
-        if ext == '.xlsb':
-            pwd = os.getcwd()
-            path = '{}/static/media/{}'.format(pwd, file)
-            print(path)
-            df = pd.read_excel(path, engine='pyxlsb', index_col=None, sheet_name=sheetname)
-            columns = df.columns
-            columns_dict = {}
-            count = 0
-            for name in columns:
-                count += 1
-                columns_dict['column{}'.format(count)] = name
-            context = {'columns':columns_dict, 'filename':file, 'sheetname':sheetname}
-            return render(request, self.template_name, context)
-
-        if ext == '.xlsm':
-            pwd = os.getcwd()
-            path = '{}/static/media/{}'.format(pwd, file)
-            print(path)
-            df = pd.read_excel(path, index_col=None, sheet_name=sheetname)
-            columns = df.columns
-            columns_dict = {}
-            count = 0
-            for name in columns:
-                count += 1
-                columns_dict['column{}'.format(count)] = name
-            context = {'columns':columns_dict, 'filename':file, 'sheetname':sheetname}
-            return render(request, self.template_name, context)
-
-        if ext == '.xlsx':
-            pwd = os.getcwd()
-            path = '{}/static/media/{}'.format(pwd, file)
-            print(path)
-            df = pd.read_excel(path, index_col=None, sheet_name=sheetname)
-            columns = df.columns
-            columns_dict = {}
-            count = 0
-            for name in columns:
-                count += 1
-                columns_dict['column{}'.format(count)] = name
-            context = {'columns':columns_dict, 'filename':file, 'sheetname':sheetname}
-            return render(request, self.template_name, context)
-
-        if ext == '.csv':
-            pwd = os.getcwd()
-            path = '{}/static/media/{}'.format(pwd, file)
-            print(path)
-            df = pd.read_csv(path, index_col=None)
-            columns = df.columns
-            columns_dict = {}
-            count = 0
-            for name in columns:
-                count += 1
-                columns_dict['column{}'.format(count)] = name
-
-            cfg = []
-            f = open("cfg.txt", "r")
-            for linea in f:
-                cfg.append(linea)
-            f.close()
-            name_app = cfg[0]
-            context = {'columns':columns_dict, 'filename':file, 'sheetname':sheetname, 'name_app':name_app}
-            return render(request, self.template_name, context)
-
-        else:
-            return render(request, self.template_name)
 
 
-
-
+"""DataTable a partir de un dataframe """
 class RcsheetView(View):
     """docstring for RcsheetView."""
     template_name = 'template.rcsheets.html'
     def post(self, request, sheet, file):
 
         fl, ext = os.path.splitext(file)
-
         if ext == '.xlsb':
             pwd = os.getcwd()
             path = '{}/static/media/{}'.format(pwd, file)
@@ -493,11 +430,10 @@ class RcsheetView(View):
                     pass
             df = pd.read_excel(path, engine='pyxlsb', index_col=None, sheet_name=sheet, usecols=lcolumns)
 
-
             url = '{}/static/media/{}'.format('http://127.0.0.1:8000', file)
 
             class_bootstrap = ['table', 'table-striped', 'table-bordered', 'display', 'text-primary', 'h7']
-            table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=True, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
+            table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=False, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
             pwd = os.getcwd()
             template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
             template_file.write(table)
@@ -527,7 +463,7 @@ class RcsheetView(View):
             url = '{}/static/media/{}'.format('http://127.0.0.1:8000', file)
             
             class_bootstrap = ['table', 'table-striped', 'table-bordered', 'display', 'text-primary', 'h7']
-            table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=True, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
+            table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=False, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
             pwd = os.getcwd()
             template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
             template_file.write(table)
@@ -557,7 +493,7 @@ class RcsheetView(View):
             url = '{}/static/media/{}'.format('http://127.0.0.1:8000', file)
             
             class_bootstrap = ['table', 'table-striped', 'table-bordered', 'display', 'text-primary', 'h7']
-            table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=True, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
+            table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=False, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
             pwd = os.getcwd()
             template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
             template_file.write(table)
@@ -581,21 +517,18 @@ class RcsheetView(View):
                     lcolumns.append(request.POST['column{}'.format(i)])
                 except:
                     pass
+
             df = pd.read_csv(path, index_col=None, usecols=lcolumns)
-
-
             url = '{}/static/media/{}'.format('http://127.0.0.1:8000', file)
-            
             class_bootstrap = ['table', 'table-striped', 'table-bordered', 'display', 'text-primary', 'h7']
-            table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=True, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
+            table = df.to_html(buf=None, columns=None, col_space=None, header=True, index=False, na_rep='NaN', formatters=None, float_format=None, sparsify=None, index_names=True, justify=None, max_rows=None, max_cols=None, show_dimensions=False, decimal='.', bold_rows=True, classes=class_bootstrap, escape=True, notebook=False, border=None, table_id='table_id', render_links=False, encoding=None)
             pwd = os.getcwd()
             template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
             template_file.write(table)
             template_file.close()
-         
-            return render(request, self.template_name, {'url':url, 'filename':file})
+            print(lcolumns)
+            return render(request, self.template_name, {'url':url, 'filename':file, 'sheetname':sheet, 'lcolumns':lcolumns})
 
         return render(request, self.template_name)
-
 
 
