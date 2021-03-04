@@ -91,7 +91,7 @@ class UploadView(View):
     def post(self, request, *args, **kwargs):
         uploaded_file = request.FILES['file']
         file, ext = os.path.splitext(str(uploaded_file))
-        if ext == '.csv' or ext == 'xlsb' or ext == 'xlsm' or ext == 'xlsx':
+        if ext == '.csv' or ext == '.xlsb' or ext == '.xlsm' or ext == '.xlsx':
             name = uploaded_file.name
             pwd = os.getcwd()
             path_true = pwd+'/static/media/'+name
@@ -406,7 +406,6 @@ class RcsheetView(View):
     """docstring for RcsheetView."""
     template_name = 'template.rcsheets.html'
     def post(self, request, sheet, file):
-
         fl, ext = os.path.splitext(file)
         if ext == '.xlsb':
             pwd = os.getcwd()
@@ -435,7 +434,7 @@ class RcsheetView(View):
             template_file.write(table)
             template_file.close()
 
-            return render(request, self.template_name)
+            return render(request, self.template_name, {'url':url, 'filename':file, 'sheetname':sheet, 'lcolumns':lcolumns})
 
         if ext == '.xlsm':
             pwd = os.getcwd()
@@ -465,7 +464,7 @@ class RcsheetView(View):
             template_file.write(table)
             template_file.close()
 
-            return render(request, self.template_name)
+            return render(request, self.template_name, {'url':url, 'filename':file, 'sheetname':sheet, 'lcolumns':lcolumns})
 
         if ext == '.xlsx':
             pwd = os.getcwd()
@@ -495,7 +494,7 @@ class RcsheetView(View):
             template_file.write(table)
             template_file.close()
 
-            return render(request, self.template_name, {'url':url})
+            return render(request, self.template_name, {'url':url, 'filename':file, 'sheetname':sheet, 'lcolumns':lcolumns})
 
         if ext == '.csv':
             pwd = os.getcwd()
@@ -522,7 +521,7 @@ class RcsheetView(View):
             template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
             template_file.write(table)
             template_file.close()
-        
+
             return render(request, self.template_name, {'url':url, 'filename':file, 'sheetname':sheet, 'lcolumns':lcolumns})
 
         return render(request, self.template_name)

@@ -105,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
+# https://docs.djangoproject.com/en/3.0/topics/i14y4eijdieygrufodullllllnethjrhokohjrhotrhjrhpkhokhglmhgmhlghmlkhlhhktoithktokhlkhogklhm, ,v vv.cvmb,bmmmmmmmmmmmmmmmmy4tortlnmh,n,bvmljkyoyiu6pkhk,jkyoi70uypkhklhjklkjkghlkj0t69u 8 mmmmrhitjop;lgjfkl;fjhglkfjhigfhjj8n/
 
 LANGUAGE_CODE = 'en-us'
 
