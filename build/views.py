@@ -493,8 +493,9 @@ class RcsheetView(View):
             template_file = open('{}/build/templates/template.table.html'.format(pwd), 'w')
             template_file.write(table)
             template_file.close()
-
-            return render(request, self.template_name, {'url':url, 'filename':file, 'sheetname':sheet, 'lcolumns':lcolumns})
+            context = {'url':url, 'filename':file, 'sheetname':sheet, 'lcolumns':lcolumns}
+            print(context)
+            return render(request, self.template_name, context)
 
         if ext == '.csv':
             pwd = os.getcwd()
